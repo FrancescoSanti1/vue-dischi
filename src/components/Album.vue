@@ -26,7 +26,7 @@ export default {
     width: 18%;
     text-align: center;
     padding: 20px;
-    margin-bottom: 20px;
+    margin: 0 1% 20px 1%;
 
     .img-container {
         padding-top: 100%;

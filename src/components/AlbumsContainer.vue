@@ -5,8 +5,8 @@
     />
 
     <div class="select-container">
-      <select v-model="selectedGenre" @change="filteredAlbumsList(selectedGenre)">
-        <option value="">Tutti i generi</option>
+      <select v-model="selectedGenre" @change="filteredAlbumsList">
+        <option selected value="">Tutti i generi</option>
         <option
         v-for="genre, i in genreList"
         :key="i"
@@ -17,7 +17,7 @@
 
     <div class="container">
       <Album
-      v-for="album, i in albumsList"
+      v-for="album, i in filteredAlbumsList"
       :key="i"
       :details="album"
       />
@@ -53,13 +53,13 @@ export default {
       // ritorno un array con la lista dei generi senza ripetizioni
       return newList;
     },
-    filteredAlbumsList(selectedItem) {
-      if(selectedItem === "") {
+    filteredAlbumsList() {
+      if(this.selectedGenre === "") {
         return this.albumsList;
       } else {
         let newList = [];
         this.albumsList.forEach(album => {
-          if(album.genre === selectedItem) {
+          if(album.genre === this.selectedGenre) {
             newList.push(album);
           }
         });
@@ -93,12 +93,13 @@ export default {
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 .select-container {
   display: flex;
   justify-content: center;
+  margin-bottom: 30px;
 }
 
 </style>
