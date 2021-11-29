@@ -4,16 +4,10 @@
     v-if="albumsList.length === 0"
     />
 
-    <div class="select-container">
-      <select v-model="selectedGenre" @change="filteredAlbumsList">
-        <option selected value="">Tutti i generi</option>
-        <option
-        v-for="genre, i in genreList"
-        :key="i"
-        :value="genre">{{genre}}
-        </option>
-      </select>
-    </div>
+    <FilteredSelection
+      :list="genreList"
+      @filter="newGenre"
+    />
 
     <div class="container">
       <Album
@@ -28,13 +22,15 @@
 <script>
 import Album from '@/components/Album.vue'
 import Loading from '@/components/Loading.vue'
+import FilteredSelection from '@/components/FilteredSelection.vue'
 import axios from 'axios'
 
 export default {
   name: 'AlbumsContainer',
   components: {
     Album,
-    Loading
+    Loading,
+    FilteredSelection
   },
   data() {
     return {
@@ -80,6 +76,9 @@ export default {
       .then((result) => {
         this.albumsList = result.data.response;
       })
+    },
+    newGenre(selected) {
+      this.selectedGenre = selected;
     }
   }
 }
@@ -94,12 +93,6 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-}
-
-.select-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 30px;
 }
 
 </style>
