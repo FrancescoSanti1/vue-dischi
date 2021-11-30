@@ -4,11 +4,6 @@
     v-if="albumsList.length === 0"
     />
 
-    <FilteredSelection
-      :list="genreList"
-      @filter="newGenre"
-    />
-
     <div class="container">
       <Album
       v-for="album, i in filteredAlbumsList"
@@ -22,40 +17,31 @@
 <script>
 import Album from '@/components/Album.vue'
 import Loading from '@/components/Loading.vue'
-import FilteredSelection from '@/components/FilteredSelection.vue'
 import axios from 'axios'
 
 export default {
   name: 'AlbumsContainer',
+  props: {
+    changedGenre: String
+  },
   components: {
     Album,
     Loading,
-    FilteredSelection
   },
   data() {
     return {
       albumsList: [],
-      selectedGenre: ""
+      genresList: [],
     }
   },
   computed: {
-    genreList() {
-      let newList = [];
-      this.albumsList.forEach(album => {
-        if(!newList.includes(album.genre)) {
-          newList.push(album.genre)
-        }
-      });
-      // ritorno un array con la lista dei generi senza ripetizioni
-      return newList;
-    },
     filteredAlbumsList() {
-      if(this.selectedGenre === "") {
+      if(this.changedGenre === "") {
         return this.albumsList;
       } else {
         let newList = [];
         this.albumsList.forEach(album => {
-          if(album.genre === this.selectedGenre) {
+          if(album.genre === this.changedGenre) {
             newList.push(album);
           }
         });
@@ -75,10 +61,17 @@ export default {
       .get("https://flynn.boolean.careers/exercises/api/array/music")
       .then((result) => {
         this.albumsList = result.data.response;
-      })
-    },
-    newGenre(selected) {
-      this.selectedGenre = selected;
+
+        // una volta ottenuti i dati, creo l'array con i generi, senza ripetere eventuali ripetizioni
+        this.albumsList.forEach(album => {
+          if(!this.genresList.includes(album.genre)) {
+            this.genresList.push(album.genre)
+          }
+        });
+      });
+
+      // una volta creato anche l'array, passo la lista dei generi al padre (App.vue) con l'evento custom
+      this.$emit('axiosIsDone', this.genresList);
     }
   }
 }

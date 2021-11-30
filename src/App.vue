@@ -1,8 +1,14 @@
 <template>
   <div id="app">
-    <Header/>
+    <Header
+      :list="arrayToPass"
+      @filter="passGenreToChild"
+    />
     <main>
-      <AlbumsContainer/>
+      <AlbumsContainer
+        :changedGenre="genreToPass"
+        @axiosIsDone="passArrayToChild"
+      />
     </main>
   </div>
 </template>
@@ -16,6 +22,23 @@ export default {
   components: {
     Header,
     AlbumsContainer,
+  },
+  data() {
+    return {
+      // tramite le props, ogni volta che questi dati vengono aggiornati, vengono inviati al figlio
+      arrayToPass: [],
+      genreToPass: ""
+    }
+  },
+  methods: {
+    passArrayToChild(arrayName) {
+      // l'evento custom axiosIsDone invoca questa funzione che aggiorna l'array coi generi
+      this.arrayToPass = arrayName;
+    },
+    passGenreToChild(genreName) {
+      // l'evento custom filter invoca questa funzione che aggiorna il valore del genere selezionato
+      this.genreToPass = genreName;
+    }
   }
 }
 </script>
